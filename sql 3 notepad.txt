@@ -1,0 +1,182 @@
+Q1) What is the highest sales amount in a day?
+
+A)  select
+       date, sum(priceusd*quantity) as sales
+    from `sales_fact`
+    group by date
+    order by sales desc    
+    limit1
+
+Q2) What is the total sales of the category ‘Dairy’?
+
+A)  Select
+        category_desc, sum(priceusd*quantity) as sales
+    from
+   `sales_fact` a
+    inner join
+   `category_dim` b
+    on a.product_id=b.product_id
+    group by
+    category_desc
+
+Q3) Which city has the highest sales?
+
+A)  Select
+        city, sum(priceusd*quantity) as sales
+    from
+   `sales_fact` a
+    inner join
+   `geography_dim` b
+    on a.store_id=b.store_id
+    group by
+    city
+    order by
+    sales desc
+
+Q4)  How many customers spent less than Rs. 3000?
+
+A)   select count(*)
+     from
+     (Select customer_id, sum(priceusd*quantity) as sales
+     from
+    `sales_fact` a
+     group by customer_id
+     having sales < 3000
+     order by sales desc) a
+
+Q5) What is the sales of the category ‘Cereals’ in the city Bangalore?
+
+A)   Select category_desc, sum(priceusd*quantity) as sales
+     from
+    `sales_fact` a
+     inner join
+    `category_dim` b
+     on a.product_id=b.product_id
+     inner join
+    `geography_dim` c
+     on a.store_id=c.store_id
+     where city='Bangalore'
+     group by category_desc
+
+Q6) Which category is the top category in terms of sales for the location Mumbai?
+
+A)   Select category_desc, sum(priceusd*quantity) as sales
+     from
+    `sales_fact` a
+     inner join
+    `category_dim` b
+     on a.product_id=b.product_id
+     inner join
+    `geography_dim` c
+     on a.store_id=c.store_id
+     where city='Mumbai'
+     group by category_desc
+     order by sales desc
+
+Q7) What is the highest sales value of category Drinks and Beverages in a single transaction? Value should reflect only sales of the mentioned category.
+
+A)   Select transaction_id, sum(priceusd*quantity) as sales
+     From
+    `sales_fact` a
+     inner join
+    `category_dim` b
+     on a.product_id=b.product_id
+     where category_desc = 'Drinks & Bevrages'
+     group by transaction_id
+     order by sales desc
+
+Q8) What is the average amount spent per customer in Chennai?
+
+A)   Select city, sum(priceusd*quantity)/count(distinct customer_id) as avg_amt_spent
+     from
+    `sales_fact` a
+     inner join
+    `geography_dim` b
+     on a.store_id=b.store_id
+     where city='Chennai'
+     group by city
+
+Q9) What is the sales amount of the lowest selling product in ‘Cereals’?
+
+A)   Select a.product_id, sum(priceusd*quantity) as sales
+     from
+    `sales_fact` a
+     inner join
+    `category_dim` b
+     on a.product_id=b.product_id
+     where category_desc = 'Cereals'
+     group by a.product_id
+     order by sales asc
+
+Q10) What is the average revenue per customer in Maharashtra?
+
+A)   Select state, sum(priceusd*quantity)/count(distinct customer_id) as ARPU
+     from
+    `sales_fact` a
+     inner join
+    `geography_dim` b
+     on a.store_id=b.store_id
+     where state='Maharashtra'
+     group by state
+
+Q11) How many customers in Karnataka spent less than Rs 3000?
+
+A)   select count(*)
+     from
+     (Select customer_id, sum(priceusd*quantity) as sales
+     from
+    `sales_fact` a
+     inner join
+    `geography_dim` c
+     on a.store_id=c.store_id
+     where state='Karnataka'
+     group by customer_id
+     having sales < 3000) a
+
+Q12) How many cities have average revenue per customer lesser than Rs 3500?
+
+A)    Select city, sum(priceusd*quantity)/count(distinct customer_id) as ARPU
+      from
+     `sales_fact` a
+      inner join
+     `geography_dim` c
+      on a.store_id=c.store_id
+      group by city
+      having ARPU < 3500
+      order by ARPU desc
+
+Q13) Which product was bought by the most number of customers?
+
+A)   Select product_id, count(distinct customer_id) as customers
+     from
+    `sales_fact` 
+     group by product_id
+     order by customers desc
+
+Q14)  How many products were bought by at least 5 customers in Maharashtra?
+
+A)    Select count(*)
+      from
+      (Select product_id, count(distinct customer_id) as customers
+      from
+     `geography_dim` a
+      left join
+     `sales_fact` b 
+      on a.store_id=b.store_id
+      where state='Maharashtra'
+      group by product_id
+      having customers >= 5) a
+
+Q15) What is the highest average amount spent per product by a customer?
+
+A)   Select customer_id, sum(priceusd*quantity)/sum(quantity) as avg_amt_spent
+     from
+    `sales_fact`
+     group by customer_id
+     order by avg_amt_spent desc
+     limit 1
+
+
+
+
+   
